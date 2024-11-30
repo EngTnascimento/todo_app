@@ -30,9 +30,7 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   void initState() {
     super.initState();
-    _filteredTasks = _tasks;
     _loadCurrentUserId().then((_) {
-      print('currentUserId: $_currentUserId');
       _loadTasks();
       _checkDueDates();
     });
@@ -40,9 +38,17 @@ class _TaskListPageState extends State<TaskListPage> {
 
   Future<void> _loadTasks() async {
     await _taskService.loadTasks();
-    _tasks = _taskService.tasks;
-    _filteredTasks = _tasks;
-    print('Tasks loaded: $_tasks');
+    setState(() {
+      _tasks = _taskService.tasks;
+      _filteredTasks = _taskService.tasks;
+    });
+
+    for (var task in _filteredTasks) {
+      print('Loaded Task: ${task.toJson()}');
+      if (task.isCompleted) {
+        print('*** THIS TASK SHOULD NOT BE IN THE LIST ***');
+      }
+    }
   }
 
   void _deleteTask(Task task) async {
@@ -52,6 +58,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
   void _addTask(Task task) async {
     await _taskService.addTask(task);
+    _loadTasks();
   }
 
   void _completeTask(Task task) async {
@@ -98,10 +105,8 @@ class _TaskListPageState extends State<TaskListPage> {
                 },
               ),
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+            Align(
+              alignment: Alignment.bottomCenter,
               child: SearchTask(
                 onSearch: _onSearch,
                 tasks: _tasks,
