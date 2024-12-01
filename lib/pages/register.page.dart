@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
-import 'package:desafio_login/database/handler.dart';
-import 'package:desafio_login/database/schemas/user.dart';
+import 'package:todo_app/database/handler.dart';
+import 'package:todo_app/database/schemas/user.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});

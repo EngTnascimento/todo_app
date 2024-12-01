@@ -1,10 +1,12 @@
-import 'package:desafio_login/database/schemas/task.dart';
-import 'package:desafio_login/pages/widgets/search_task_form.dart';
-import 'package:desafio_login/pages/widgets/task_form.dart';
-import 'package:desafio_login/pages/widgets/task_list_item.dart';
+import 'package:todo_app/database/handler.dart';
+import 'package:todo_app/database/schemas/category.dart';
+import 'package:todo_app/database/schemas/task.dart';
+import 'package:todo_app/pages/widgets/search_task_form.dart';
+import 'package:todo_app/pages/widgets/task_form.dart';
+import 'package:todo_app/pages/widgets/task_list_item.dart';
 import 'package:flutter/material.dart';
-import 'package:desafio_login/services/task.service.dart';
-import 'package:desafio_login/services/notifications.service.dart';
+import 'package:todo_app/services/task.service.dart';
+import 'package:todo_app/services/notifications.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskListPage extends StatefulWidget {
@@ -18,6 +20,7 @@ class _TaskListPageState extends State<TaskListPage> {
   List<Task> _tasks = [];
   List<Task> _filteredTasks = [];
   late final int _currentUserId;
+  List<Category> _categories = [];
 
   Future<void> _loadCurrentUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -42,13 +45,6 @@ class _TaskListPageState extends State<TaskListPage> {
       _tasks = _taskService.tasks;
       _filteredTasks = _taskService.tasks;
     });
-
-    for (var task in _filteredTasks) {
-      print('Loaded Task: ${task.toJson()}');
-      if (task.isCompleted) {
-        print('*** THIS TASK SHOULD NOT BE IN THE LIST ***');
-      }
-    }
   }
 
   void _deleteTask(Task task) async {
@@ -56,14 +52,29 @@ class _TaskListPageState extends State<TaskListPage> {
     _loadTasks();
   }
 
-  void _addTask(Task task) async {
-    await _taskService.addTask(task);
+  Future<int> _addTask(Task task) async {
+    int id = await _taskService.addTask(task);
+    _loadCategories(id);
     _loadTasks();
+    return id;
   }
 
   void _completeTask(Task task) async {
     await _taskService.editTask(task);
     _loadTasks();
+  }
+
+  void _loadCategories(int taskId) async {
+    DatabaseHandler db = DatabaseHandler();
+    List<Category> categories = await db.getCategoriesByTask(taskId);
+    setState(() {
+      _categories = categories;
+    });
+  }
+
+  List<Category> _getCategories(int taskId) {
+    _loadCategories(taskId);
+    return _categories;
   }
 
   void _onSearch(List<Task> tasks, [bool reset = false]) {
@@ -101,6 +112,7 @@ class _TaskListPageState extends State<TaskListPage> {
                     onDeleteTask: _deleteTask,
                     onTaskEdited: _loadTasks,
                     onTaskCompleted: _completeTask,
+                    categories: _getCategories(_filteredTasks[index].id!),
                   );
                 },
               ),

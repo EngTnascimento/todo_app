@@ -1,6 +1,8 @@
-import 'package:desafio_login/pages/edit_task.page.dart';
+import 'package:todo_app/database/handler.dart';
+import 'package:todo_app/database/schemas/category.dart';
+import 'package:todo_app/pages/edit_task.page.dart';
 import 'package:flutter/material.dart';
-import 'package:desafio_login/database/schemas/task.dart';
+import 'package:todo_app/database/schemas/task.dart';
 import 'package:intl/intl.dart';
 
 class TaskListItem extends StatelessWidget {
@@ -8,12 +10,14 @@ class TaskListItem extends StatelessWidget {
   final Function onDeleteTask;
   final Function onTaskEdited;
   final Function onTaskCompleted;
+  final List<Category> categories;
 
   TaskListItem(
       {required this.task,
       required this.onDeleteTask,
       required this.onTaskEdited,
-      required this.onTaskCompleted});
+      required this.onTaskCompleted,
+      required this.categories});
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +107,28 @@ class TaskListItem extends StatelessWidget {
                     }
                   },
                 ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              alignment: WrapAlignment.start,
+              children: [
+                for (var category in categories)
+                  Chip(
+                    label: Text(category.name),
+                    backgroundColor: {
+                      'Red': const Color.fromARGB(255, 232, 135, 128),
+                      'Green': const Color.fromARGB(255, 162, 233, 164),
+                      'Blue': const Color.fromARGB(255, 166, 210, 246),
+                    }[category.name]!,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  )
               ],
             ),
           ),

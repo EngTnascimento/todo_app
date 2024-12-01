@@ -1,4 +1,4 @@
-import 'package:desafio_login/database/schemas/task.dart';
+import 'package:todo_app/database/schemas/task.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationsService {

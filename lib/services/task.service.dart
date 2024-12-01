@@ -1,5 +1,5 @@
-import 'package:desafio_login/database/handler.dart';
-import 'package:desafio_login/database/schemas/task.dart';
+import 'package:todo_app/database/handler.dart';
+import 'package:todo_app/database/schemas/task.dart';
 
 class TaskService {
   int currentUserId;
@@ -9,9 +9,10 @@ class TaskService {
 
   List<Task> tasks = [];
 
-  Future<void> addTask(Task task) async {
-    await _databaseHandler.addTask(task);
+  Future<int> addTask(Task task) async {
+    int id = await _databaseHandler.addTask(task);
     tasks.add(task);
+    return id;
   }
 
   int getGetCurrentUserId() {
@@ -19,8 +20,8 @@ class TaskService {
   }
 
   Future<void> editTask(Task task) async {
-    print(
-        'editing task: title: ${task.title}, description: ${task.description}, dueDate: ${task.dueDate}');
+    // print(
+    //     'editing task: title: ${task.title}, description: ${task.description}, dueDate: ${task.dueDate}');
     await _databaseHandler.editTask(task);
     tasks.removeWhere((element) => element.id == task.id);
     tasks.add(task);
@@ -33,6 +34,5 @@ class TaskService {
 
   Future<void> loadTasks() async {
     tasks = await _databaseHandler.getTasks(currentUserId);
-    print('tasks: $tasks');
   }
 }

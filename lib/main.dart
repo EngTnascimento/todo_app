@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:desafio_login/pages/login.page.dart';
-import 'package:desafio_login/pages/register.page.dart';
-import 'package:desafio_login/pages/task_list.page.dart';
+import 'package:todo_app/pages/login.page.dart';
+import 'package:todo_app/pages/register.page.dart';
+import 'package:todo_app/pages/task_list.page.dart';
 
 void main() {
   sqfliteFfiInit();

@@ -1,4 +1,4 @@
-import 'package:desafio_login/database/schemas/task.dart';
+import 'package:todo_app/database/schemas/task.dart';
 import 'package:flutter/material.dart';
 
 class SearchTask extends StatefulWidget {

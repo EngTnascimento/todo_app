@@ -1,12 +1,16 @@
-import 'package:desafio_login/database/schemas/task.dart';
-import 'package:desafio_login/services/task.service.dart';
+import 'package:todo_app/database/handler.dart';
+import 'package:todo_app/database/schemas/category.dart';
+import 'package:todo_app/database/schemas/task.dart';
+import 'package:todo_app/services/task.service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:multiselect_formfield/multiselect_formfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskForm extends StatefulWidget {
   final Function onTaskSubmitted;
 
-  TaskForm({required this.onTaskSubmitted});
+  const TaskForm({required this.onTaskSubmitted});
 
   @override
   _TaskFormState createState() => _TaskFormState();
@@ -14,11 +18,27 @@ class TaskForm extends StatefulWidget {
 
 class _TaskFormState extends State<TaskForm> {
   final _formKey = GlobalKey<FormState>();
+  late TaskService _taskService;
+  late int _currentUserId;
   String _taskTitle = '';
   String _taskDescription = '';
-  DateTime _dueDate = DateTime.now();
-  late int _currentUserId;
-  late TaskService _taskService;
+  final DateTime _dueDate = DateTime.now();
+  List<Category> _categories = [];
+  final List<Category> _selectedCategories = [];
+  List<Map<String, String>>? _dataSource;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await _loadCurrentUserId();
+    await _loadCategories();
+    _dataSource = _setDataSource();
+    setState(() {});
+  }
 
   Future<void> _loadCurrentUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -26,6 +46,36 @@ class _TaskFormState extends State<TaskForm> {
       _currentUserId = prefs.getInt('currentUserId')!;
     });
     _taskService = TaskService(_currentUserId);
+  }
+
+  Future<void> _loadCategories() async {
+    DatabaseHandler db = DatabaseHandler();
+    List<Category> categories = await db.getCategoriesByUser(_currentUserId);
+    setState(() {
+      _categories = categories;
+    });
+  }
+
+  List<Map<String, String>> _setDataSource() {
+    List<Map<String, String>> dataSource = [];
+    List<Category> categories = _categories;
+    for (var category in categories) {
+      dataSource.add({
+        "display": category.name,
+        "value": category.id.toString(),
+      });
+    }
+    for (var m in dataSource) {
+      if (m['display'] == null || m['value'] == null) {
+        print('*** error here ***');
+      }
+    }
+    return dataSource;
+  }
+
+  Future<void> _attachCategories(int taskId) async {
+    DatabaseHandler db = DatabaseHandler();
+    await db.attachCateoriesToTask(_selectedCategories, taskId);
   }
 
   void _submit() async {
@@ -38,24 +88,24 @@ class _TaskFormState extends State<TaskForm> {
         dueDate: _dueDate,
         isCompleted: false,
       );
-      widget.onTaskSubmitted(task);
+      int id = await widget.onTaskSubmitted(task);
+      print('Id from submit: $id');
+      await _attachCategories(id);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    _loadCurrentUserId();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (_dataSource == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
     return Form(
       key: _formKey,
       child: Column(
         children: [
           TextFormField(
-            decoration: InputDecoration(labelText: 'Task Title'),
+            decoration: const InputDecoration(labelText: 'Task Title'),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a task title';
@@ -65,7 +115,7 @@ class _TaskFormState extends State<TaskForm> {
             onSaved: (value) => _taskTitle = value!,
           ),
           TextFormField(
-            decoration: InputDecoration(labelText: 'Task Description'),
+            decoration: const InputDecoration(labelText: 'Task Description'),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a task description';
@@ -74,34 +124,38 @@ class _TaskFormState extends State<TaskForm> {
             },
             onSaved: (value) => _taskDescription = value!,
           ),
-          TextFormField(
-            decoration: InputDecoration(labelText: 'Due Date'),
+          MultiSelectFormField(
+            title: const Text('Categories'),
             validator: (value) {
-              if (value == null) {
-                return 'Please select a due date';
+              if (value == null || value.length == 0) {
+                return 'Please select one or more categories';
               }
               return null;
             },
-            onTap: () async {
-              final DateTime? picked = await showDatePicker(
-                context: context,
-                initialDate: _dueDate,
-                firstDate: DateTime.now(),
-                lastDate: DateTime(2030),
-              );
-              if (picked != null) {
-                setState(() {
-                  _dueDate = picked;
-                });
+            dataSource: const [
+              {"display": "Red", "value": "1"},
+              {"display": "Blue", "value": "2"},
+              {"display": "Green", "value": "3"},
+            ],
+            textField: 'display',
+            valueField: 'value',
+            okButtonLabel: 'Save',
+            cancelButtonLabel: 'Cancel',
+            onSaved: (values) {
+              if (values != null) {
+                _selectedCategories.clear();
+                List<Category> categories = _categories;
+                for (var value in values) {
+                  Category category = categories.firstWhere(
+                      (category) => category.id.toString() == value);
+                  _selectedCategories.add(category);
+                }
               }
             },
           ),
-          SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
-              _submit();
-            },
-            child: Text('Add Task'),
+            onPressed: _submit,
+            child: const Text('Submit'),
           ),
         ],
       ),

@@ -1,8 +1,7 @@
-import 'package:desafio_login/pages/widgets/edit_task_form.dart';
-import 'package:desafio_login/pages/widgets/task_form.dart';
+import 'package:todo_app/pages/widgets/edit_task_form.dart';
 import 'package:flutter/material.dart';
-import 'package:desafio_login/database/schemas/task.dart';
-import 'package:desafio_login/services/task.service.dart';
+import 'package:todo_app/database/schemas/task.dart';
+import 'package:todo_app/services/task.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditTaskPage extends StatefulWidget {
