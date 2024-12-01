@@ -5,7 +5,7 @@ class SearchTask extends StatefulWidget {
   final Function onSearch;
   final List<Task> tasks;
 
-  const SearchTask({required this.onSearch, required this.tasks});
+  const SearchTask({super.key, required this.onSearch, required this.tasks});
 
   @override
   _SearchTaskState createState() => _SearchTaskState();

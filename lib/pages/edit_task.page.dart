@@ -1,3 +1,4 @@
+import 'package:todo_app/pages/widgets/app_bar.dart';
 import 'package:todo_app/pages/widgets/edit_task_form.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_app/database/schemas/task.dart';
@@ -8,8 +9,8 @@ class EditTaskPage extends StatefulWidget {
   final Task task;
   final Function onTaskEdited;
 
-  const EditTaskPage({Key? key, required this.task, required this.onTaskEdited})
-      : super(key: key);
+  const EditTaskPage(
+      {super.key, required this.task, required this.onTaskEdited});
 
   @override
   _EditTaskPageState createState() => _EditTaskPageState();
@@ -50,9 +51,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Task'),
-      ),
+      appBar: const MyAppBar(title: 'Edit Task'),
       body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: EditTaskForm(

@@ -7,7 +7,7 @@ import 'package:todo_app/database/schemas/task.dart';
 
 class DatabaseHandler {
   static const String _databaseName = 'user_credentials.db';
-  static const int _version = 2;
+  static const int _version = 3;
 
   static Database? _database;
 
@@ -64,7 +64,7 @@ class DatabaseHandler {
     await db.execute('''
         CREATE TABLE category_list (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
           user_id INTEGER NOT NULL,
           FOREIGN KEY (user_id) REFERENCES users (id)
         )
@@ -126,7 +126,7 @@ class DatabaseHandler {
       await db.execute('''
         CREATE TABLE category_list (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
-          name TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
           user_id INTEGER NOT NULL,
           FOREIGN KEY (user_id) REFERENCES users (id)
         )

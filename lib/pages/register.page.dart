@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/database/handler.dart';
 import 'package:todo_app/database/schemas/user.dart';
+import 'package:todo_app/pages/widgets/app_bar.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -31,9 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Register'),
-      ),
+      appBar: const MyAppBar(title: 'Register'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

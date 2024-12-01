@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class TaskForm extends StatefulWidget {
   final Function onTaskSubmitted;
 
-  const TaskForm({required this.onTaskSubmitted});
+  const TaskForm({super.key, required this.onTaskSubmitted});
 
   @override
   _TaskFormState createState() => _TaskFormState();
@@ -154,13 +154,14 @@ class _TaskFormState extends State<TaskForm> {
             },
           ),
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.centerLeft,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: const Color.fromARGB(255, 108, 136, 158),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
               ),
@@ -168,7 +169,7 @@ class _TaskFormState extends State<TaskForm> {
                 final DateTime? picked = await showDatePicker(
                   context: context,
                   initialDate: _dueDate,
-                  firstDate: DateTime.now(),
+                  firstDate: DateTime.now().subtract(const Duration(days: 5)),
                   lastDate: DateTime(2030),
                 );
                 if (picked != null) {
@@ -181,8 +182,8 @@ class _TaskFormState extends State<TaskForm> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(DateFormat('yyyy-MM-dd').format(_dueDate)),
-                  SizedBox(width: 8),
-                  Icon(Icons.calendar_today),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.calendar_today),
                 ],
               ),
             ),

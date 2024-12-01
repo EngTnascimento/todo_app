@@ -11,8 +11,9 @@ class TaskListItem extends StatefulWidget {
   final Function onTaskEdited;
   final Function onTaskCompleted;
 
-  TaskListItem(
-      {required this.task,
+  const TaskListItem(
+      {super.key,
+      required this.task,
       required this.onDeleteTask,
       required this.onTaskEdited,
       required this.onTaskCompleted});
@@ -61,11 +62,12 @@ class _TaskListItemState extends State<TaskListItem> {
       child: Column(
         children: [
           ListTile(
-            leading: Icon(Icons.task),
+            leading: const Icon(Icons.task),
             title: Text(widget.task.title,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            subtitle:
-                Text(widget.task.description, style: TextStyle(fontSize: 16)),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            subtitle: Text(widget.task.description,
+                style: const TextStyle(fontSize: 16)),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -86,7 +88,7 @@ class _TaskListItemState extends State<TaskListItem> {
                         ),
                       ),
                 // Task box
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 isOverdue
                     ? const Icon(
                         Icons.alarm,
@@ -101,9 +103,9 @@ class _TaskListItemState extends State<TaskListItem> {
                         semanticLabel: 'Today',
                       )
                     : Container(),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 IconButton(
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -118,7 +120,7 @@ class _TaskListItemState extends State<TaskListItem> {
                 ),
                 // Delete button
                 IconButton(
-                  icon: Icon(Icons.delete),
+                  icon: const Icon(Icons.delete),
                   onPressed: () {
                     widget.onDeleteTask(widget.task);
                   },
@@ -163,7 +165,7 @@ class _TaskListItemState extends State<TaskListItem> {
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
         ],
       ),
     );

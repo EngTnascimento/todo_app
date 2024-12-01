@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/database/handler.dart';
 import 'package:todo_app/database/schemas/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:todo_app/pages/widgets/app_bar.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -38,9 +41,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: const MyAppBar(title: 'Login'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -48,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter an email';
@@ -61,7 +62,7 @@ class _LoginPageState extends State<LoginPage> {
                 onSaved: (value) => _email = value!,
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -71,13 +72,13 @@ class _LoginPageState extends State<LoginPage> {
                 },
                 onSaved: (value) => _password = value!,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submit,
-                child: Text('Login'),
+                child: const Text('Login'),
               ),
               TextButton(
-                child: Text('Don\'t have an account? Register'),
+                child: const Text('Don\'t have an account? Register'),
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/register');
                 },

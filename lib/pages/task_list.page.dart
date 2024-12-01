@@ -1,6 +1,7 @@
 import 'package:todo_app/database/handler.dart';
 import 'package:todo_app/database/schemas/category.dart';
 import 'package:todo_app/database/schemas/task.dart';
+import 'package:todo_app/pages/widgets/app_bar.dart';
 import 'package:todo_app/pages/widgets/search_task_form.dart';
 import 'package:todo_app/pages/widgets/task_form.dart';
 import 'package:todo_app/pages/widgets/task_list_item.dart';
@@ -10,6 +11,8 @@ import 'package:todo_app/services/notifications.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskListPage extends StatefulWidget {
+  const TaskListPage({super.key});
+
   @override
   _TaskListPageState createState() => _TaskListPageState();
 }
@@ -95,8 +98,16 @@ class _TaskListPageState extends State<TaskListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Task List'),
+      appBar: MyAppBar(
+        title: 'Task List',
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            // Add your logout logic here
+            // For example:
+            Navigator.pushReplacementNamed(context, '/login');
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

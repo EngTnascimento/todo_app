@@ -11,7 +11,8 @@ class EditTaskForm extends StatefulWidget {
   final Task task;
   final Function onTaskSubmitted;
 
-  EditTaskForm({required this.task, required this.onTaskSubmitted});
+  const EditTaskForm(
+      {super.key, required this.task, required this.onTaskSubmitted});
 
   @override
   _EditTaskFormState createState() => _EditTaskFormState();
@@ -87,7 +88,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
         children: [
           TextFormField(
             initialValue: _taskTitle,
-            decoration: InputDecoration(labelText: 'Task Title'),
+            decoration: const InputDecoration(labelText: 'Task Title'),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a task title';
@@ -102,7 +103,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
           ),
           TextFormField(
             initialValue: _taskDescription,
-            decoration: InputDecoration(labelText: 'Task Description'),
+            decoration: const InputDecoration(labelText: 'Task Description'),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Please enter a task description';
@@ -117,7 +118,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
           ),
           MultiSelectFormField(
             autovalidate: AutovalidateMode.disabled,
-            title: Text('Categories'),
+            title: const Text('Categories'),
             validator: (value) {
               if (value == null || value.length == 0) {
                 return 'Please select one or more categories';
@@ -150,13 +151,14 @@ class _EditTaskFormState extends State<EditTaskForm> {
             },
           ),
           Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: const EdgeInsets.only(top: 10),
             alignment: Alignment.centerLeft,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: const Color.fromARGB(255, 108, 136, 158),
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10)),
               ),
@@ -177,13 +179,13 @@ class _EditTaskFormState extends State<EditTaskForm> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(DateFormat('yyyy-MM-dd').format(_dueDate)),
-                  SizedBox(width: 8),
-                  Icon(Icons.calendar_today),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.calendar_today),
                 ],
               ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
@@ -191,7 +193,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
               }
               _submit();
             },
-            child: Text('Edit Task'),
+            child: const Text('Edit Task'),
           ),
         ],
       ),
