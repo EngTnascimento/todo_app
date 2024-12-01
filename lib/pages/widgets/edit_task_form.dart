@@ -35,9 +35,22 @@ class _EditTaskFormState extends State<EditTaskForm> {
     _taskService = TaskService(_currentUserId);
   }
 
-  Future<void> _updateCategories(Task task) async {
+  Future<void> _updateCategories(int taskId) async {
     DatabaseHandler db = DatabaseHandler();
-    await db.updateCategoriesToTask(_selectedCategories, task);
+    for (var category in _selectedCategories) {
+      print('category id: ${category.id}');
+      print('catagory name: ${category.name}');
+    }
+    print('task id: $taskId');
+    await db.updateCategoriesToTask(_selectedCategories, taskId);
+  }
+
+  Future<void> _loadCategories() async {
+    DatabaseHandler db = DatabaseHandler();
+    List<Category> categories = await db.getCategoriesByUser(_currentUserId);
+    setState(() {
+      _categories.addAll(categories);
+    });
   }
 
   void _submit() async {
@@ -49,14 +62,18 @@ class _EditTaskFormState extends State<EditTaskForm> {
         dueDate: _dueDate,
         isCompleted: widget.task.isCompleted);
     await _taskService.editTask(task);
-    _updateCategories(task);
+    print('task id: ${task.id}');
+
+    await _updateCategories(task.id!);
     widget.onTaskSubmitted();
   }
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentUserId();
+    _loadCurrentUserId().then((_) {
+      _loadCategories();
+    });
     _taskTitle = widget.task.title;
     _taskDescription = widget.task.description;
     _dueDate = widget.task.dueDate;
@@ -107,19 +124,28 @@ class _EditTaskFormState extends State<EditTaskForm> {
               }
               return null;
             },
-            dataSource: _categories.map((category) {
-              return {
-                "display": category.name,
-                "value": category.id,
-              };
-            }).toList(),
+            dataSource: const [
+              {"display": "Red", "value": "1"},
+              {"display": "Blue", "value": "2"},
+              {"display": "Green", "value": "3"},
+            ],
             textField: 'display',
             valueField: 'value',
             okButtonLabel: 'OK',
             cancelButtonLabel: 'Cancel',
+            initialValue: _categories
+                .map((category) => {
+                      "display": category.name,
+                      "value": category.id.toString(),
+                    })
+                .toList() as List<Map<String, dynamic>>,
             onSaved: (values) {
+              print('values: $values');
               setState(() {
-                _selectedCategories = values;
+                _selectedCategories = _categories
+                    .where(
+                        (category) => values.contains(category.id.toString()))
+                    .toList();
               });
             },
           ),

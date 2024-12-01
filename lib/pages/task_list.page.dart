@@ -112,7 +112,6 @@ class _TaskListPageState extends State<TaskListPage> {
                     onDeleteTask: _deleteTask,
                     onTaskEdited: _loadTasks,
                     onTaskCompleted: _completeTask,
-                    categories: _getCategories(_filteredTasks[index].id!),
                   );
                 },
               ),

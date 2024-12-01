@@ -22,7 +22,7 @@ class _TaskFormState extends State<TaskForm> {
   late int _currentUserId;
   String _taskTitle = '';
   String _taskDescription = '';
-  final DateTime _dueDate = DateTime.now();
+  DateTime _dueDate = DateTime.now();
   List<Category> _categories = [];
   final List<Category> _selectedCategories = [];
   List<Map<String, String>>? _dataSource;
@@ -152,6 +152,40 @@ class _TaskFormState extends State<TaskForm> {
                 }
               }
             },
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            alignment: Alignment.centerLeft,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(255, 108, 136, 158),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+              ),
+              onPressed: () async {
+                final DateTime? picked = await showDatePicker(
+                  context: context,
+                  initialDate: _dueDate,
+                  firstDate: DateTime.now(),
+                  lastDate: DateTime(2030),
+                );
+                if (picked != null) {
+                  setState(() {
+                    _dueDate = picked;
+                  });
+                }
+              },
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(DateFormat('yyyy-MM-dd').format(_dueDate)),
+                  SizedBox(width: 8),
+                  Icon(Icons.calendar_today),
+                ],
+              ),
+            ),
           ),
           ElevatedButton(
             onPressed: _submit,

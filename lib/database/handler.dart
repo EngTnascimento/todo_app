@@ -200,14 +200,20 @@ class DatabaseHandler {
   }
 
   Future<List<Category>> getCategoriesByTask(int taskId) async {
+    print('taskId from getCategoriesByTask: $taskId');
     Database db = await database;
-    List<Map<String, dynamic>> maps = await db.rawQuery('''
-    SELECT cl.* 
-    FROM task_categories tc 
-    JOIN category_list cl ON tc.category_id = cl.id 
-    WHERE tc.task_id = ?
-  ''', [taskId]);
-    return maps.map((map) => Category.fromJson(map)).toList();
+    List<Map<String, dynamic>> maps = await db.query('task_categories',
+        columns: ['category_id'], where: 'task_id = ?', whereArgs: [taskId]);
+    print('maps: $maps');
+    List<int> categoryIds =
+        maps.map((map) => map['category_id'] as int).toList();
+    print('categoryIds: $categoryIds');
+    List<Map<String, dynamic>> categoryMaps = await db.query('category_list',
+        where:
+            'id IN (${List.generate(categoryIds.length, (index) => '?').join(', ')})',
+        whereArgs: categoryIds);
+    print('categoryMaps: $categoryMaps');
+    return categoryMaps.map((map) => Category.fromJson(map)).toList();
   }
 
   Future<void> removeCategoryFromTask(int taskId, Category category) async {
@@ -230,14 +236,15 @@ class DatabaseHandler {
   }
 
   Future<void> updateCategoriesToTask(
-      List<Category> categories, Task task) async {
+      List<Category> categories, int taskId) async {
     Database db = await database;
     await db
-        .delete('task_categories', where: 'task_id = ?', whereArgs: [task.id]);
+        .delete('task_categories', where: 'task_id = ?', whereArgs: [taskId]);
     for (var category in categories) {
+      print('inserting category: ${category.name}');
       await db.insert('task_categories', {
         'user_id': category.userId,
-        'task_id': task.id,
+        'task_id': taskId,
         'category_id': category.id
       });
     }
