@@ -7,7 +7,7 @@ import 'package:todo_app/database/schemas/task.dart';
 
 class DatabaseHandler {
   static const String _databaseName = 'user_credentials.db';
-  static const int _version = 3;
+  static const int _version = 6;
 
   static Database? _database;
 
@@ -137,6 +137,7 @@ class DatabaseHandler {
   Future<int> insertUser(User user) async {
     Database db = await database;
     int userId = await db.insert('users', user.toJson());
+    print('inserting categories for user id: $userId');
     await db.insert('category_list', {'name': 'Red', 'user_id': userId});
     await db.insert('category_list', {'name': 'Blue', 'user_id': userId});
     await db.insert('category_list', {'name': 'Green', 'user_id': userId});
@@ -226,7 +227,9 @@ class DatabaseHandler {
   Future<void> attachCateoriesToTask(
       List<Category> categories, int taskId) async {
     Database db = await database;
+    print('categories count: ${categories.length}');
     for (var category in categories) {
+      print('inserting category: ${category.name}');
       await db.insert('task_categories', {
         'user_id': category.userId,
         'task_id': taskId,

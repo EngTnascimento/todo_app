@@ -41,6 +41,7 @@ class _EditTaskPageState extends State<EditTaskPage> {
     setState(() {
       _currentUserId = prefs.getInt('currentUserId') ?? 0;
     });
+    print('currentUserId: $_currentUserId');
   }
 
   void _editTask() async {

@@ -11,7 +11,11 @@ import 'package:todo_app/services/notifications.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TaskListPage extends StatefulWidget {
-  const TaskListPage({super.key});
+  final Function(bool) toggleTheme;
+  final bool isDarkTheme;
+
+  const TaskListPage(
+      {super.key, required this.toggleTheme, required this.isDarkTheme});
 
   @override
   _TaskListPageState createState() => _TaskListPageState();
@@ -57,6 +61,7 @@ class _TaskListPageState extends State<TaskListPage> {
 
   Future<int> _addTask(Task task) async {
     int id = await _taskService.addTask(task);
+    print('id from task list page: $id');
     _loadCategories(id);
     _loadTasks();
     return id;
@@ -73,11 +78,6 @@ class _TaskListPageState extends State<TaskListPage> {
     setState(() {
       _categories = categories;
     });
-  }
-
-  List<Category> _getCategories(int taskId) {
-    _loadCategories(taskId);
-    return _categories;
   }
 
   void _onSearch(List<Task> tasks, [bool reset = false]) {
@@ -100,11 +100,17 @@ class _TaskListPageState extends State<TaskListPage> {
     return Scaffold(
       appBar: MyAppBar(
         title: 'Task List',
+        actions: [
+          Switch(
+            value: widget.isDarkTheme,
+            onChanged: (value) {
+              widget.toggleTheme(value);
+            },
+          ),
+        ],
         leading: IconButton(
           icon: const Icon(Icons.logout),
           onPressed: () {
-            // Add your logout logic here
-            // For example:
             Navigator.pushReplacementNamed(context, '/login');
           },
         ),

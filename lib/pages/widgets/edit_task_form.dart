@@ -24,7 +24,7 @@ class _EditTaskFormState extends State<EditTaskForm> {
   String _taskDescription = '';
   DateTime _dueDate = DateTime.now();
   late int _currentUserId;
-  final List<Category> _categories = [];
+  List<Category> _categories = [];
   List<Category> _selectedCategories = [];
   late TaskService _taskService;
 
@@ -47,10 +47,12 @@ class _EditTaskFormState extends State<EditTaskForm> {
   }
 
   Future<void> _loadCategories() async {
-    DatabaseHandler db = DatabaseHandler();
-    List<Category> categories = await db.getCategoriesByUser(_currentUserId);
     setState(() {
-      _categories.addAll(categories);
+      _categories = [
+        Category(id: 1, name: 'Red', userId: _currentUserId),
+        Category(id: 2, name: 'Blue', userId: _currentUserId),
+        Category(id: 3, name: 'Green', userId: _currentUserId),
+      ];
     });
   }
 

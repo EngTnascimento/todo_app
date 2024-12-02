@@ -24,7 +24,7 @@ class _TaskFormState extends State<TaskForm> {
   String _taskDescription = '';
   DateTime _dueDate = DateTime.now();
   List<Category> _categories = [];
-  final List<Category> _selectedCategories = [];
+  List<Category> _selectedCategories = [];
   List<Map<String, String>>? _dataSource;
 
   @override
@@ -49,10 +49,12 @@ class _TaskFormState extends State<TaskForm> {
   }
 
   Future<void> _loadCategories() async {
-    DatabaseHandler db = DatabaseHandler();
-    List<Category> categories = await db.getCategoriesByUser(_currentUserId);
     setState(() {
-      _categories = categories;
+      _categories = [
+        Category(id: 1, name: 'Red', userId: _currentUserId),
+        Category(id: 2, name: 'Blue', userId: _currentUserId),
+        Category(id: 3, name: 'Green', userId: _currentUserId),
+      ];
     });
   }
 
@@ -74,6 +76,7 @@ class _TaskFormState extends State<TaskForm> {
   }
 
   Future<void> _attachCategories(int taskId) async {
+    print('calling attachCateoriesToTask');
     DatabaseHandler db = DatabaseHandler();
     await db.attachCateoriesToTask(_selectedCategories, taskId);
   }
@@ -142,15 +145,14 @@ class _TaskFormState extends State<TaskForm> {
             okButtonLabel: 'Save',
             cancelButtonLabel: 'Cancel',
             onSaved: (values) {
-              if (values != null) {
-                _selectedCategories.clear();
-                List<Category> categories = _categories;
-                for (var value in values) {
-                  Category category = categories.firstWhere(
-                      (category) => category.id.toString() == value);
-                  _selectedCategories.add(category);
-                }
-              }
+              print('TaskForm values: $values');
+              print('categories count: ${_categories.length}');
+              setState(() {
+                _selectedCategories = _categories
+                    .where(
+                        (category) => values.contains(category.id.toString()))
+                    .toList();
+              });
             },
           ),
           Container(
